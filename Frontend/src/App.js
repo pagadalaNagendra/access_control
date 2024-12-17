@@ -10,19 +10,85 @@ import ExistingUsersPage from './components/Usermanagement/ExistingUsersPage';
 import ExistingUsersTable from './components/Usermanagement/ExistingUsersTable';
 import AppBarComponent from './components/Usermanagement/Appbar2';
 import DataDisplay from './components/Usermanagement/DataDisplay';
+import CheckRequest from './components/Usermanagement/CheckRequest';
+import ProtectedRoute from './components/Usermanagement/ProtectedRoute';
+
 function App() {
   return (
     <Routes>
       <Route path="/" element={<LoginPage />} />
-      <Route path="/Admin" element={<Admin />} />
-      {/* <Route path="/login" element={<LoginPage />} /> */}
-      <Route path="/Assign" element={<SignupPage />} />
-      <Route path="/existing-users" element={<ExistingUsersPage />} />
-      <Route path="/existing-users" element={<ExistingUsersTable />} />
-      <Route path="/Appbar2" element={<AppBarComponent />} />
-      <Route path="/appbar" element={<AppBar />} />
-      <Route path="/sidedrawer" element={<SideDrawer />} />
-      <Route path="/DataDisplay" element={<DataDisplay />} />
+      <Route
+        path="/Admin"
+        element={
+          <ProtectedRoute allowedRoles={['Admin']}>
+            <Admin />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/Assign"
+        element={
+          <ProtectedRoute allowedRoles={['Admin']}>
+            <SignupPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/existing-users"
+        element={
+          <ProtectedRoute allowedRoles={['Admin']}>
+            <ExistingUsersPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/existing-users-table"
+        element={
+          <ProtectedRoute allowedRoles={['Admin']}>
+            <ExistingUsersTable />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/Appbar2"
+        element={
+          <ProtectedRoute allowedRoles={['Admin', 'OH', 'CH', 'DH', 'SDH']}>
+            <AppBarComponent />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/appbar"
+        element={
+          <ProtectedRoute allowedRoles={['Admin', 'OH', 'CH', 'DH', 'SDH']}>
+            <AppBar />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/sidedrawer"
+        element={
+          <ProtectedRoute allowedRoles={['Admin', 'OH', 'CH', 'DH', 'SDH']}>
+            <SideDrawer />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/DataDisplay"
+        element={
+          <ProtectedRoute allowedRoles={['Admin', 'OH', 'CH', 'DH', 'SDH']}>
+            <DataDisplay />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/CheckRequest"
+        element={
+          <ProtectedRoute allowedRoles={['Admin', 'OH', 'CH', 'DH', 'SDH']}>
+            <CheckRequest />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }
