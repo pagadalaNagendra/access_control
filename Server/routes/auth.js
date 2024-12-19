@@ -4,10 +4,16 @@ const db = require("../db");
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
+const path = require('path');
+const multer = require('multer');
 
 const SESSION_SECRET = process.env.SESSION_SECRET || "default_session_secret";
 
 const acceptedRequests = {}; // In-memory store for accepted requests
+
+const storage = multer.memoryStorage(); // Use memory storage
+
+const upload = multer({ storage: storage });
 
 function padNumber(num) {
   const size = 3;
@@ -107,12 +113,21 @@ router.post("/login", async (req, res) => {
       { expiresIn: "1h" } // Adjust the token expiry as needed
     );
 
-    // Send token, email, and role in the response body
+    // Query to get options and deadlines for the user
+    const optionsQuery = `
+      SELECT option, deadline
+      FROM accepted_requests
+      WHERE email = $1
+    `;
+    const optionsResult = await db.query(optionsQuery, [email]);
+
+    // Send token, email, role, and options with deadlines in the response body
     res.json({
       success: true,
       email: user.email,
       role: user.role,
       token: token,
+      options: optionsResult.rows,
     });
   } catch (error) {
     console.error(error.message);
@@ -295,7 +310,7 @@ router.get("/check-request", async (req, res) => {
   }
 });
 
-router.get("/check-requestsgh", async (req, res) => {
+router.get("/logos-data", async (req, res) => {
   try {
     const selectQuery = "SELECT * FROM accepted_requests";
     const result = await db.query(selectQuery);
@@ -307,5 +322,118 @@ router.get("/check-requestsgh", async (req, res) => {
   }
 });
 
+// router.get("/user-access", async (req, res) => {
+//   const { email } = req.query;
+
+//   try {
+//     const selectQuery = `
+//       SELECT um.userid, um.username, um.email, um.role, ar.option, ar.deadline, ar.created_at
+//       FROM user_management um
+//       JOIN accepted_requests ar ON um.email = ar.email
+//       WHERE um.email = $1
+//     `;
+//     const result = await db.query(selectQuery, [email]);
+
+//     if (result.rows.length > 0) {
+//       res.json({ success: true, access: result.rows });
+//     } else {
+//       res.json({ success: false, message: "No access data found for this user" });
+//     }
+//   } catch (error) {
+//     console.error(error.message);
+//     res.status(500).send("Internal Server Error");
+//   }
+// });
+
+
+
+router.get("/user-access", async (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({ success: false, message: "No token provided" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "your_jwt_secret_key");
+    const email = decoded.email;
+
+    const selectQuery = `
+      SELECT um.userid, um.username, um.email, um.role, ar.option, ar.deadline, ar.created_at
+      FROM user_management um
+      JOIN accepted_requests ar ON um.email = ar.email
+      WHERE um.email = $1
+    `;
+    const result = await db.query(selectQuery, [email]);
+
+    if (result.rows.length > 0) {
+      res.json({ success: true, access: result.rows });
+    } else {
+      res.json({ success: false, message: "No access data found for this user" });
+    }
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+router.post("/upload-pdf", upload.single('pdf'), async (req, res) => {
+  try {
+    const { title } = req.body;
+    const pdfFile = req.file;
+
+    if (!pdfFile) {
+      return res.status(400).json({ success: false, message: "No file uploaded" });
+    }
+
+    const insertQuery = "INSERT INTO pdf_files(title, file_data) VALUES($1, $2) RETURNING *";
+    const values = [title, pdfFile.buffer];
+    const insertedFile = await db.query(insertQuery, values);
+
+    res.json({ success: true, file: insertedFile.rows[0] });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+router.get("/pdf-file/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const selectQuery = "SELECT title, file_data FROM pdf_files WHERE id = $1";
+    const result = await db.query(selectQuery, [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ success: false, message: "File not found" });
+    }
+
+    const file = result.rows[0];
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename=${file.title}.pdf`);
+    res.send(file.file_data);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+router.get("/pdf-files", async (req, res) => {
+  try {
+    const selectQuery = "SELECT id, title, file_data FROM pdf_files";
+    const result = await db.query(selectQuery);
+
+    const files = result.rows.map(file => ({
+      id: file.id,
+      title: file.title,
+      data: file.file_data.toString('base64')
+    }));
+
+    res.json({ success: true, files });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Internal Server Error");
+  }
+});
 
 module.exports = router;

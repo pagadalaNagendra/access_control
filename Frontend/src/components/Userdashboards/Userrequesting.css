@@ -1,0 +1,132 @@
+.container {
+    display: flex;
+    flex-direction: center;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 16px;
+    margin-top: 200px;
+    position: sticky;
+    /* position: relative; */
+   
+  }
+  
+  .form {
+    border: 1px solid #e0e0e0;
+    padding: 24px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 480px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for better focus */
+    /* display: flex; */
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .form-item {
+    margin-bottom: 20px;
+    width: 100%;
+  }
+  
+  .form-item:last-child {
+    margin-bottom: 0;
+  }
+  
+  .button {
+    margin-top: 16px;
+    width: 100%; /* Button spans the full width */
+    font-weight: bold;
+  }
+  
+  .primary-button {
+    background-color: #1976d2;
+    color: #ffffff;
+    transition: background-color 0.3s;
+  }
+  
+  .primary-button:hover {
+    background-color: #155a9c; /* Darker shade for hover effect */
+  }
+  
+  .secondary-button {
+    background-color: #dc004e;
+    color: #ffffff;
+    transition: background-color 0.3s;
+  }
+  
+  .secondary-button:hover {
+    background-color: #a30038; /* Darker shade for hover effect */
+  }
+  
+  .typography {
+    text-align: center;
+    color: #333333; /* Slightly darker text for better readability */
+  }
+  
+  input,
+  select {
+    padding: 12px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: 1px solid #cccccc;
+    transition: border-color 0.3s;
+  }
+  
+  input:focus,
+  select:focus {
+    border-color: #1976d2; /* Highlight border on focus */
+    outline: none;
+  }
+  
+  label {
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #555555;
+  }
+  
+  @media (max-width: 600px) {
+    .form {
+      padding: 16px;
+      border-radius: 8px;
+    }
+  
+    .button {
+      font-size: 14px;
+    }
+  }
+  
+
+  .form {
+    border: 1px solid #e0e0e0;
+    padding: 24px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 480px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px; /* Added gap between form fields */
+  }
+  
+  .form-item {
+    width: 100%;
+  }
+  
+  input,
+  select {
+    padding: 12px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: 1px solid #cccccc;
+    transition: border-color 0.3s;
+  }
+  
+  input:focus,
+  select:focus {
+    border-color: #1976d2;
+    outline: none;
+  }
+  

@@ -3,30 +3,34 @@ import { Routes, Route } from 'react-router-dom';
 import WelcomePage from './components/WelcomePage';
 import LoginPage from './components/Usermanagement/LoginPage';
 import SignupPage from './components/Usermanagement/SignupPage';
-import AppBar from './components/Usermanagement/AppBar';
-import Admin from './components/Usermanagement/Admin';
-import SideDrawer from './components/SideDrawer';
-import ExistingUsersPage from './components/Usermanagement/ExistingUsersPage';
+// import AppBar from './components/Usermanagement/AppBar';
+// import Admin from './components/Usermanagement/Admin';
+// import SideDrawer from './components/SideDrawer';
+// import ExistingUsersPage from './components/Usermanagement/ExistingUsersPage';
 import ExistingUsersTable from './components/Usermanagement/ExistingUsersTable';
-import AppBarComponent from './components/Usermanagement/Appbar2';
-import DataDisplay from './components/Usermanagement/DataDisplay';
-import CheckRequest from './components/Usermanagement/CheckRequest';
+// import AppBarComponent from './components/Usermanagement/Appbar2';
+// import DataDisplay from './components/Usermanagement/DataDisplay';
+// import CheckRequest from './components/Usermanagement/CheckRequest';
 import ProtectedRoute from './components/Usermanagement/ProtectedRoute';
+import PdfViewer from './components/Resources/PdfViewer';
+import Youtube from './components/Youtube';
+import Formdata from './components/Resources/Formdata';
+import Userdashboard from './components/Userdashboards/Userrequesting';
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<LoginPage />} />
+      <Route path="/accesscontrol" element={<LoginPage />} />
       <Route
-        path="/Admin"
+        path="/accesscontrol/Formdata"
         element={
-          <ProtectedRoute allowedRoles={['Admin']}>
-            <Admin />
+          <ProtectedRoute allowedRoles={['Admin', 'User']}>
+            <Formdata />
           </ProtectedRoute>
         }
       />
       <Route
-        path="/Assign"
+        path="/accesscontrol/Assign"
         element={
           <ProtectedRoute allowedRoles={['Admin']}>
             <SignupPage />
@@ -34,58 +38,58 @@ function App() {
         }
       />
       <Route
-        path="/existing-users"
-        element={
-          <ProtectedRoute allowedRoles={['Admin']}>
-            <ExistingUsersPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/existing-users-table"
+        path="/accesscontrol/existing-users-table"
         element={
           <ProtectedRoute allowedRoles={['Admin']}>
             <ExistingUsersTable />
           </ProtectedRoute>
         }
       />
-      <Route
-        path="/Appbar2"
+      {/* <Route
+        path="/accesscontrol/Appbar2"
         element={
-          <ProtectedRoute allowedRoles={['Admin', 'OH', 'CH', 'DH', 'SDH']}>
+          <ProtectedRoute allowedRoles={['Admin', 'User', 'Maintainer']}>
             <AppBarComponent />
           </ProtectedRoute>
         }
-      />
-      <Route
-        path="/appbar"
+      /> */}
+      {/* <Route
+        path="/accesscontrol/appbar"
         element={
-          <ProtectedRoute allowedRoles={['Admin', 'OH', 'CH', 'DH', 'SDH']}>
+          <ProtectedRoute allowedRoles={['Admin', 'User', 'Maintainer']}>
             <AppBar />
           </ProtectedRoute>
         }
-      />
+      /> */}
       <Route
-        path="/sidedrawer"
+        path="/accesscontrol/Pdfviewer"
         element={
-          <ProtectedRoute allowedRoles={['Admin', 'OH', 'CH', 'DH', 'SDH']}>
-            <SideDrawer />
+          <ProtectedRoute allowedRoles={['Admin', 'User', 'Maintainer']} requiredOptions={['Pdfviewer']}>
+            <PdfViewer />
           </ProtectedRoute>
         }
       />
       <Route
-        path="/DataDisplay"
+        path="/accesscontrol/Youtube"
         element={
-          <ProtectedRoute allowedRoles={['Admin', 'OH', 'CH', 'DH', 'SDH']}>
-            <DataDisplay />
+          <ProtectedRoute allowedRoles={['Admin', 'User', 'Maintainer']} requiredOptions={['Youtube']}>
+            <Youtube />
           </ProtectedRoute>
         }
       />
       <Route
-        path="/CheckRequest"
+        path="/accesscontrol/Formdata"
         element={
-          <ProtectedRoute allowedRoles={['Admin', 'OH', 'CH', 'DH', 'SDH']}>
-            <CheckRequest />
+          <ProtectedRoute allowedRoles={['Admin', 'Maintainer']}>
+            <Formdata />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/accesscontrol/Userdashboard"
+        element={
+          <ProtectedRoute allowedRoles={['User']}>
+            <Userdashboard />
           </ProtectedRoute>
         }
       />

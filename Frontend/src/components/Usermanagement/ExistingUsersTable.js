@@ -1,4 +1,4 @@
-import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
+import React, { useState, useEffect, forwardRef, useImperativeHandle } from "react";
 import {
   Table,
   TableBody,
@@ -16,13 +16,49 @@ import {
   DialogContent,
   DialogActions,
   Grid,
-} from '@mui/material';
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
+} from "@mui/material";
+
+const UpdateUserDialog = ({ open, user, onClose, onSubmit, onInputChange }) => {
+  const roles = ["Admin", "User"]; // List of roles
+
+  return (
+    <Dialog open={open} onClose={onClose}>
+      <DialogTitle>Update User</DialogTitle>
+      <DialogContent>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <FormControl fullWidth>
+              <InputLabel>Role</InputLabel>
+              <Select label="Role" name="role" value={user.role} onChange={onInputChange}>
+                {roles.map((role, index) => (
+                  <MenuItem key={index} value={role.toLowerCase()}>
+                    {role}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+        </Grid>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={onSubmit} variant="contained" color="primary">
+          Update
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
 
 const ExistingUsersTable = forwardRef((props, ref) => {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [page, setPage] = useState(0);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedUser, setSelectedUser] = useState({});
   const rowsPerPage = 3;
@@ -39,10 +75,10 @@ const ExistingUsersTable = forwardRef((props, ref) => {
         setUsers(data);
         setFilteredUsers(data);
       } else {
-        console.error('Failed to fetch users');
+        console.error("Failed to fetch users");
       }
     } catch (error) {
-      console.error('Error fetching users:', error);
+      console.error("Error fetching users:", error);
     }
   };
 
@@ -51,10 +87,14 @@ const ExistingUsersTable = forwardRef((props, ref) => {
   }));
 
   useEffect(() => {
-    const filtered = users.filter(user =>
-      user.role.toLowerCase().includes(searchQuery.toLowerCase())
+    const filtered = users.filter(
+      (user) =>
+        user.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.username.toLowerCase().includes(searchQuery.toLowerCase())
     );
     setFilteredUsers(filtered);
+    setPage(0); // Reset page to 0 when search results change
   }, [users, searchQuery]);
 
   const totalPages = Math.ceil(filteredUsers.length / rowsPerPage);
@@ -71,9 +111,9 @@ const ExistingUsersTable = forwardRef((props, ref) => {
   const handleDialogSubmit = async () => {
     try {
       const response = await fetch("http://127.0.0.1:8000/auth/update", {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(selectedUser),
       });
@@ -82,45 +122,47 @@ const ExistingUsersTable = forwardRef((props, ref) => {
         fetchUsers();
         setOpenDialog(false);
       } else {
-        console.error('Failed to update user');
+        console.error("Failed to update user");
       }
     } catch (error) {
-      console.error('Error updating user:', error);
+      console.error("Error updating user:", error);
     }
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setSelectedUser(prevState => ({
+    setSelectedUser((prevState) => ({
       ...prevState,
-      [name]: value,
+      [name]: value.toLowerCase(), // Convert the input value to lowercase
     }));
   };
 
   return (
-    <Box sx={{ border: '1px solid grey', padding: 2, borderRadius: 2, backgroundColor: '#f5f5f5' }}>
-      <Typography variant="h5" align='center' component="div" gutterBottom style={{ color: '#333' }}>
+    <Box
+      sx={{
+        border: "1px solid grey",
+        padding: 2,
+        borderRadius: 2,
+        backgroundColor: "#f5f5f5",
+        width: "74%", // Reduced the width to make the container smaller
+        margin: "20px auto", // Added margin to move the container up
+        marginTop: "0px",
+      }}
+    >
+      <Typography variant="h5" align="center" component="div" gutterBottom style={{ color: "#333" }}>
         Existing Users
       </Typography>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
-        <TextField
-          label="Search by Role"
-          variant="outlined"
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
-          size="small"
-          style={{ maxWidth: '200px' }}
-        />
+      <Box sx={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "16px" }}>
+        <TextField label="Search by User" variant="outlined" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} size="small" style={{ maxWidth: "200px" }} />
       </Box>
-      <TableContainer component={Paper} style={{ boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' }}>
+      <TableContainer component={Paper} style={{ boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)" }}>
         <Table aria-label="existing users table">
           <TableHead>
             <TableRow>
               <TableCell>Username</TableCell>
               <TableCell>Email</TableCell>
               <TableCell>Role</TableCell>
-              <TableCell>Password</TableCell>
-              <TableCell>Action</TableCell> {/* New column for update button */}
+              <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -129,7 +171,6 @@ const ExistingUsersTable = forwardRef((props, ref) => {
                 <TableCell>{user.username}</TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.role}</TableCell>
-                <TableCell>{user.password}</TableCell>
                 <TableCell>
                   <Button onClick={() => handleUpdateClick(user)}>Update</Button>
                 </TableCell>
@@ -138,76 +179,22 @@ const ExistingUsersTable = forwardRef((props, ref) => {
           </TableBody>
         </Table>
       </TableContainer>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px' }}>
-        <Typography variant="body1" style={{ color: '#333' }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "16px" }}>
+        <Typography variant="body1" style={{ color: "#333" }}>
           Page {page + 1} of {totalPages}
         </Typography>
         <Box>
-          <Button
-            variant="contained"
-            disabled={page === 0}
-            onClick={() => setPage(page - 1)}
-            style={{ backgroundColor: '#333', color: '#fff' }}
-          >
+          <Button variant="contained" disabled={page === 0} onClick={() => setPage(page - 1)} style={{ backgroundColor: "#333", color: "#fff" }}>
             Prev
           </Button>
-          <Button
-            variant="contained"
-            disabled={page === totalPages - 1}
-            onClick={() => setPage(page + 1)}
-            style={{ backgroundColor: '#333', color: '#fff', marginLeft: '8px' }}
-          >
+          <Button variant="contained" disabled={page === totalPages - 1} onClick={() => setPage(page + 1)} style={{ backgroundColor: "#333", color: "#fff", marginLeft: "8px" }}>
             Next
           </Button>
         </Box>
       </Box>
-      <Dialog open={openDialog} onClose={handleDialogClose}>
-        <DialogTitle>Update User</DialogTitle>
-        <DialogContent>  
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="Username"
-                name="username"
-                value={selectedUser.username}
-                onChange={handleInputChange}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="Email"
-                name="email"
-                value={selectedUser.email}
-                onChange={handleInputChange}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="Role"
-                name="role"
-                value={selectedUser.role}
-                onChange={handleInputChange}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="Password"
-                name="password"
-                value={selectedUser.password}
-                onChange={handleInputChange}
-                fullWidth
-              />
-            </Grid>
-          </Grid>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose}>Cancel</Button>
-          <Button onClick={handleDialogSubmit} variant="contained" color="primary">Update</Button>
-        </DialogActions>
-      </Dialog>
+
+      {/* Use the UpdateUserDialog component */}
+      <UpdateUserDialog open={openDialog} user={selectedUser} onClose={handleDialogClose} onSubmit={handleDialogSubmit} onInputChange={handleInputChange} />
     </Box>
   );
 });

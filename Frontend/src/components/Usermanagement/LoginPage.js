@@ -158,16 +158,15 @@ const LoginPage = () => {
       localStorage.setItem("token", json.token); // Store the token in localStorage
       localStorage.setItem("email", json.email); // Store the email in localStorage
       localStorage.setItem("role", json.role); // Store the role in localStorage
+      localStorage.setItem("options", JSON.stringify(json.options)); // Store the options in localStorage
+
+      // Navigate based on role and options
       if (json.role === "Admin") {
-        navigate("/Admin");
-      } else if (json.role === "OH") {
-        navigate("/Organizationhead");
-      } else if (json.role === "CH") {
-        navigate("/Circlehead");
-      } else if (json.role === "DH") {
-        navigate("/Divisionhead");
-      } else if (json.role === "SDH") {
-        navigate("/Subdivisionhead");
+        navigate("/accesscontrol/Formdata");
+      } else if (json.role === "User") {
+        navigate("/accesscontrol/Userdashboard");
+      } else if (json.role === "Maintainer") {
+        navigate("/accesscontrol/Formdata");
       }
     } else {
       alert("Please provide valid credentials!!");

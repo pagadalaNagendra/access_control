@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Box, TextField, Button, Typography, Container, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import Adminnavbar from "../Adminnavbar";
+import './Userrequesting.css';
 
 const Userrequesting = () => {
   const [email, setEmail] = useState('');
@@ -37,13 +39,12 @@ const Userrequesting = () => {
     setSelectedOption(event.target.value);
   };
 
-  const handleCheckRequest = () => {
-    navigate('/check-request');
-  };
+
 
   return (
-    <Container maxWidth="sm">
-      <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+    <Container maxWidth="sm" className="container">
+      <Adminnavbar />
+      <Box component="form" onSubmit={handleSubmit} className="form">
         <Typography variant="h5" component="div" gutterBottom>
           Send Email
         </Typography>
@@ -54,9 +55,9 @@ const Userrequesting = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          sx={{ mb: 2 }}
+          className="form-item"
         />
-        <FormControl variant="outlined" fullWidth sx={{ mb: 2 }}>
+        <FormControl variant="outlined" fullWidth className="form-item">
           <InputLabel id="demo-simple-select-outlined-label">Options</InputLabel>
           <Select
             labelId="demo-simple-select-outlined-label"
@@ -70,15 +71,12 @@ const Userrequesting = () => {
               <em>None</em>
             </MenuItem>
             <MenuItem value="Youtube">Youtube</MenuItem>
-            <MenuItem value="Test reports">Test reports</MenuItem>
+            <MenuItem value="Pdfviewer">Pdf_files</MenuItem>
             <MenuItem value="Reference notes">Reference notes</MenuItem>
           </Select>
         </FormControl>
-        <Button variant="contained" color="primary" type="submit">
+        <Button variant="contained" color="primary" type="submit" className="button primary-button">
           Send
-        </Button>
-        <Button variant="contained" color="secondary" onClick={handleCheckRequest} sx={{ mt: 2 }}>
-          Check Request Status
         </Button>
       </Box>
     </Container>

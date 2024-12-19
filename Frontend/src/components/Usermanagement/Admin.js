@@ -1,22 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { AppBar, Toolbar, Typography, Box, Button, Dialog, Container, IconButton, Drawer, List, ListItem, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
+import { AppBar, Toolbar, Typography, Box, Button, Dialog, Container, IconButton, Drawer, List, ListItem, ListItemIcon, ListItemText, Menu, MenuItem, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Grid } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import AlarmIcon from '@mui/icons-material/Alarm';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Analytics from '@mui/icons-material/Analytics';
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
-import ReplayIcon from "@mui/icons-material/Replay";
+import ReplayIcon from '@mui/icons-material/Replay';
 import logo from './logos.png';
-// import backgroundImg from './BYPLimage.jpg'; // import your background image here
+import axios from 'axios';
 
 const styles = {
   appBar: {
-    backgroundColor: '#002e41', // Material-UI primary color
-    zIndex: 1201, // Ensure AppBar is above other elements
+    backgroundColor: '#002e41',
+    zIndex: 1201,
   },
   toolbar: {
     display: 'flex',
@@ -25,26 +23,20 @@ const styles = {
   },
   logo: {
     height: 40,
-    marginRight: 16, // Add some spacing between the logo and title
+    marginRight: 16,
   },
   title: {
     flexGrow: 1,
     textAlign: 'center',
-    color: '#fff', // Set text color to white for better visibility
+    color: '#fff',
   },
   button: {
-    color: '#fff', // Set text color to white for better visibility
-    marginLeft: 16, // Add some spacing between the buttons
-    textDecoration: 'none', // Remove underline from the link
+    color: '#fff',
+    marginLeft: 16,
+    textDecoration: 'none',
   },
   container: {
-    flexGrow: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    textAlign: 'center', // Center the text
-    padding: '20px', // Add some padding for spacing
+    padding: '20px',
   },
   drawer: {
     width: 250,
@@ -52,10 +44,9 @@ const styles = {
   },
   drawerPaper: {
     width: 250,
-    marginTop: 64, // Adjust to make space for the app bar
+    marginTop: 64,
   },
   body: {
-    // backgroundImage: `url(${backgroundImg})`,
     backgroundColor: '#F5F5F5',
     backgroundSize: 'cover',
     backgroundPosition: 'center',
@@ -68,28 +59,34 @@ const styles = {
   sessionTimeoutDialog: {
     width: "600px",
     padding: "48px",
-    backgroundColor: "#f3e5f5", // Light purple background color
+    backgroundColor: "#f3e5f5",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
   },
   errorIcon: {
-    fontSize: "96px", // Increased icon size
-    color: "#c51162", // Attractive red color
+    fontSize: "96px",
+    color: "#c51162",
     marginBottom: "24px",
   },
   sessionTimeoutText: {
     marginBottom: "16px",
-    fontWeight: "bold", // Bold text for better visibility
+    fontWeight: "bold",
   },
   loginAgainText: {
     display: "flex",
     alignItems: "center",
-    marginBottom: "32px", // Increased bottom margin for better spacing
-    fontSize: "18px", // Increased font size for better readability
+    marginBottom: "32px",
+    fontSize: "18px",
   },
   loginAgainIcon: {
     marginRight: "8px",
+  },
+  formContainer: {
+    marginBottom: '20px', // Add margin to the bottom of the form container
+  },
+  tableContainer: {
+    marginTop: '20px', // Add margin to the top of the table container
   },
 };
 
@@ -97,12 +94,15 @@ const Admin = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [sessionTimeoutAlert, setSessionTimeoutAlert] = useState(false);
+  const [youtubeLink, setYoutubeLink] = useState('');
+  const [youtubeTitle, setYoutubeTitle] = useState('');
+  const [logoData, setLogoData] = useState([]);
   const navigate = useNavigate();
   const sessionTimer = useRef(null);
 
   useEffect(() => {
     const startSessionTimer = () => {
-      const sessionDuration = 1 * 24 * 60 * 60 * 1000; // 5 seconds for testing, adjust as needed
+      const sessionDuration = 1 * 24 * 60 * 60 * 1000;
       return setTimeout(() => {
         setSessionTimeoutAlert(true);
       }, sessionDuration);
@@ -123,6 +123,24 @@ const Admin = () => {
       document.removeEventListener("mousemove", resetTimer);
       document.removeEventListener("keypress", resetTimer);
     };
+  }, []);
+
+  useEffect(() => {
+    const fetchLogoData = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/auth/logos-data');
+        if (response.data.success) {
+          setLogoData(response.data.requests);
+        } else {
+          alert('Failed to fetch logo data.');
+        }
+      } catch (error) {
+        console.error('Error fetching logo data:', error);
+        alert('Failed to fetch logo data.');
+      }
+    };
+
+    fetchLogoData();
   }, []);
 
   const handleSessionTimeoutAlertClose = () => {
@@ -148,8 +166,35 @@ const Admin = () => {
 
   const handleLogout = () => {
     handleClose();
-    // Redirect to login page
     navigate('/login');
+  };
+
+  const handleYoutubeLinkChange = (event) => {
+    setYoutubeLink(event.target.value);
+  };
+
+  const handleYoutubeTitleChange = (event) => {
+    setYoutubeTitle(event.target.value);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const response = await fetch('http://localhost:8000/auth/youtube', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ url: youtubeLink, title: youtubeTitle }),
+    });
+
+    const result = await response.json();
+    if (result.success) {
+      alert('YouTube link and title uploaded successfully!');
+      setYoutubeLink('');
+      setYoutubeTitle('');
+    } else {
+      alert('Failed to upload YouTube link and title.');
+    }
   };
 
   return (
@@ -196,25 +241,21 @@ const Admin = () => {
           </IconButton>
         </Box>
         <List>
-          <ListItem button component={Link} to="/https://smartcitylivinglab.iiit.ac.in/maintenance-dashboard/complaints">
+  
+          <ListItem button component={Link} to="/accesscontrol/Pdfviewer">
             <ListItemIcon>
-              <Analytics />
+              {/* <Description /> */}
             </ListItemIcon>
-            <ListItemText primary="Complaints list" />
+            <ListItemText primary="Pdfviewer" />
           </ListItem>
-          {/* <ListItem button component={Link} to="/alarmlog">
+          <ListItem button component={Link} to="/accesscontrol/Youtube">
             <ListItemIcon>
-              <AlarmIcon />
+              <PersonAddAltIcon />
             </ListItemIcon>
-            <ListItemText primary="Alarmlog" />
+            <ListItemText primary="Youtube" />
           </ListItem>
-          <ListItem button component={Link} to="/logstore">
-            <ListItemIcon>
-              <Description />
-            </ListItemIcon>
-            <ListItemText primary="Logstore" />
-          </ListItem> */}
-          <ListItem button component={Link} to="/Assign">
+
+          <ListItem button component={Link} to="/accesscontrol/Assign">
             <ListItemIcon>
               <PersonAddAltIcon />
             </ListItemIcon>
@@ -222,10 +263,70 @@ const Admin = () => {
           </ListItem>
         </List>
       </Drawer>
-      <Container maxWidth="md" style={styles.container}>
-        <Typography variant="h4" component="div" gutterBottom>
-          Welcome to the Admin Dashboard
-        </Typography>
+      <Container maxWidth="lg" style={styles.container}>
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={4}>
+            <Box style={styles.formContainer}>
+              <Typography variant="h4" component="div" gutterBottom>
+                Upload YouTube Link and Title
+              </Typography>
+              <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+                <TextField
+                  label="YouTube Link"
+                  variant="outlined"
+                  fullWidth
+                  value={youtubeLink}
+                  onChange={handleYoutubeLinkChange}
+                  required
+                  sx={{ mb: 2 }}
+                />
+                <TextField
+                  label="YouTube Title"
+                  variant="outlined"
+                  fullWidth
+                  value={youtubeTitle}
+                  onChange={handleYoutubeTitleChange}
+                  required
+                  sx={{ mb: 2 }}
+                />
+                <Button variant="contained" color="primary" type="submit">
+                  Upload
+                </Button>
+              </Box>
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={8}>
+            <Box style={styles.tableContainer}>
+              <Typography variant="h4" component="div" gutterBottom>
+                Logo Data
+              </Typography>
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>ID</TableCell>
+                      <TableCell>Email</TableCell>
+                      <TableCell>Option</TableCell>
+                      <TableCell>Deadline</TableCell>
+                      <TableCell>Created At</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {logoData && logoData.map((request) => (
+                      <TableRow key={request.id}>
+                        <TableCell>{request.id}</TableCell>
+                        <TableCell>{request.email}</TableCell>
+                        <TableCell>{request.option}</TableCell>
+                        <TableCell>{new Date(request.deadline).toLocaleString()}</TableCell>
+                        <TableCell>{new Date(request.created_at).toLocaleString()}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Box>
+          </Grid>
+        </Grid>
       </Container>
 
       <Dialog
