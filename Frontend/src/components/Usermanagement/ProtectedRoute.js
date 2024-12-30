@@ -16,13 +16,13 @@ const ProtectedRoute = ({ children, allowedRoles, requiredOptions = [] }) => {
   // If no token or role is found, redirect to login page
   if (!token || !role) {
     alert('You need to log in to access this page.');
-    return <Navigate to="/accesscontrol" replace />;
+    return <Navigate to="/resources" replace />;
   }
 
   // If the user's role is not in the allowed roles, redirect to login page
   if (!allowedRoles.includes(role)) {
     alert('You do not have permission to access this page.');
-    return <Navigate to="/accesscontrol" replace />;
+    return <Navigate to="/resources" replace />;
   }
 
   // If the user is a 'User', check if they have the required options and if the deadline has not passed
@@ -32,7 +32,7 @@ const ProtectedRoute = ({ children, allowedRoles, requiredOptions = [] }) => {
 
     if (!hasRequiredOptions) {
       alert('You do not have the required permissions to access this page.');
-      navigate('/accesscontrol/Userdashboard');
+      navigate('/resources/Userdashboard');
       return null;
     }
 
@@ -45,7 +45,7 @@ const ProtectedRoute = ({ children, allowedRoles, requiredOptions = [] }) => {
 
     if (!hasValidDeadline) {
       alert('Your access to this page has expired.');
-      navigate('/accesscontrol/Userdashboard');
+      navigate('/resources/Userdashboard');
       return null;
     }
   }

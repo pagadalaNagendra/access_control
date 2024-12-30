@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import "./PdfViewer.css"; // Ensure the CSS file is correctly linked
 import Adminnavbar from "../Adminnavbar";
-
+import config from "../config";
 function PdfViewer() {
   const [pdfFiles, setPdfFiles] = useState([]);
 
   useEffect(() => {
     const fetchPdfs = async () => {
       try {
-        const response = await fetch("http://localhost:8000/auth/pdf-files"); // Replace with your backend URL
+        const response = await fetch(`${config.backendapi}/auth/pdf-files`); // Replace with your backend URL
         const data = await response.json();
 
         if (data.success && data.files) {

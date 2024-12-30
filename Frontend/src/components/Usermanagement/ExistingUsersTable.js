@@ -21,6 +21,7 @@ import {
   InputLabel,
   FormControl,
 } from "@mui/material";
+import config from "../config";
 
 const UpdateUserDialog = ({ open, user, onClose, onSubmit, onInputChange }) => {
   const roles = ["Admin", "User"]; // List of roles
@@ -69,7 +70,7 @@ const ExistingUsersTable = forwardRef((props, ref) => {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/auth/");
+      const response = await fetch(`${config.backendAPI}/auth/`);
       if (response.ok) {
         const data = await response.json();
         setUsers(data);

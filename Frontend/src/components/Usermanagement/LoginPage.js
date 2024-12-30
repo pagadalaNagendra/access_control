@@ -4,10 +4,11 @@ import { useNavigate } from "react-router-dom";
 import logo from "./logos.png";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import ReplayIcon from "@mui/icons-material/Replay";
+import config from "../config";
 
 const styles = {
   appBar: {
-    backgroundColor: "#002e41",
+    backgroundColor: "#123462",
   },
   toolbar: {
     display: "flex",
@@ -146,7 +147,7 @@ const LoginPage = () => {
 
     setPasswordError('');
 
-    const response = await fetch("http://localhost:8000/auth/login", {
+    const response = await fetch(`${config.backendapi}/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -162,11 +163,11 @@ const LoginPage = () => {
 
       // Navigate based on role and options
       if (json.role === "Admin") {
-        navigate("/accesscontrol/Formdata");
+        navigate("/resources/Formdata");
       } else if (json.role === "User") {
-        navigate("/accesscontrol/Userdashboard");
+        navigate("/resources/Userdashboard");
       } else if (json.role === "Maintainer") {
-        navigate("/accesscontrol/Formdata");
+        navigate("/resources/Formdata");
       }
     } else {
       alert("Please provide valid credentials!!");
@@ -181,7 +182,7 @@ const LoginPage = () => {
             <img src={logo} alt="Logo" style={styles.logo} />
           </Box>
           <Typography variant="h6" component="div" align="center" style={styles.title}>
-            Dashboard
+            References
           </Typography>
         </Toolbar>
       </AppBar>

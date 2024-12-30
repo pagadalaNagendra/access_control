@@ -28,7 +28,7 @@
     padding: 25px;
     border: 1px solid #e0e0e0;
     border-radius: 10px;
-    background-color: #ffffff; /* Pure white for cleaner look */
+    background-color: #ECEEF8; /* Pure white for cleaner look */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: box-shadow 0.3s ease;
   }
@@ -135,13 +135,13 @@
   }
   
   .data-table th {
-    background-color: #007bff;
+    background-color: #0288D1;
     color: #fff;
     text-transform: uppercase;
   }
   
   .data-table tr:nth-child(even) {
-    background-color: #f8f9fa; /* Alternate row color */
+    background-color: #ECEEF8; /* Alternate row color */
   }
   
   .data-table tr:hover {
@@ -165,7 +165,7 @@
   } */
   
   .table-wrapper {
-    max-height: 250px; 
+    max-height: 350px; 
     overflow-y: auto;
     border: 1px solid #ECEEF8;
   }

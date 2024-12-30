@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./Formdata.css"; // Add styling here
 import Adminnavbar from "../Adminnavbar"
+import config from "../config";
 function UploadSwitcher() {
   const [currentForm, setCurrentForm] = useState("youtube");
   const [youtubeTitle, setYoutubeTitle] = useState("");
@@ -15,7 +16,7 @@ function UploadSwitcher() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/auth/logos-data");
+        const response = await axios.get(`${config.backendapi}/auth/logos-data`);
         if (response.data.success) {
           setTableData(response.data.requests); // Use the requests array from the response
         } else {
@@ -38,7 +39,7 @@ function UploadSwitcher() {
     }
 
     try {
-      await axios.post("http://localhost:8000/auth/youtube", {
+      await axios.post(`${config.backendapi}/auth/youtube`, {
         title: youtubeTitle,
         url: youtubeUrl,
       });
@@ -64,7 +65,7 @@ function UploadSwitcher() {
     formData.append("pdf", pdfFile);
 
     try {
-      await axios.post("http://localhost:8000/auth/upload-pdf", formData, {
+      await axios.post(`${config.backendapi}/auth/upload-pdf`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -158,7 +159,7 @@ function UploadSwitcher() {
 
       {/* Table Section */}
       <div className="table-container">
-        <h2>Uploaded Data</h2>
+        <h2>Logos </h2>
         <div className="table-wrapper">
           {tableData.length > 0 ? (
             <table className="data-table">
@@ -166,7 +167,7 @@ function UploadSwitcher() {
                 <tr>
                   <th>ID</th>
                   <th>Email</th>
-                  <th>Option</th>
+                  <th>Platform</th>
                   <th>Deadline</th>
                   <th>Created At</th>
                 </tr>

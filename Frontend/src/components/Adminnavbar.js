@@ -10,8 +10,8 @@ import ReplayIcon from "@mui/icons-material/Replay";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
-import logo from "./logos.png";
-import logos from "./logos1.png";
+import logo from "./Usermanagement/logos.png";
+// import logos from "./logos3.png";
 import "./Adminnavbar.css";
 
 const styles = {
@@ -25,11 +25,11 @@ const styles = {
     alignItems: "center",
   },
   logo: {
-    height: 40,
+    height: 50,
     marginRight: 16,
   },
   logos:{
-    height: 60,
+    height: 70,
     marginRight: 16,
   },
   title: {
@@ -137,7 +137,7 @@ const Adminnavbar = () => {
   const handleLogout = () => {
     localStorage.clear();
     handleClose();
-    navigate("/accesscontrol");
+    navigate("/resources");
   };
 
   return (
@@ -147,11 +147,11 @@ const Adminnavbar = () => {
           <IconButton color="inherit" onClick={handleDrawerOpen}>
             <MenuIcon />
           </IconButton>
-          <img src={logos} alt="Logos" style={styles.logo} />
-          <img src={logo} alt="Logo" style={styles.logos} />
+          {/* <img src={logos} alt="Logos" style={styles.logos} /> */}
+         <img src={logo} alt="Logo" style={styles.logo} />
          
           <Typography variant="h5" component="div" style={styles.title}>
-          Resources
+          References
           </Typography>
 
           <IconButton color="inherit" onClick={handleUserClick}>
@@ -183,19 +183,19 @@ const Adminnavbar = () => {
         <List>
           {userRole === "Admin" && (
             <>
-              <ListItem button component={Link} to="/accesscontrol/Pdfviewer">
+              <ListItem button component={Link} to="/resources/Pdfviewer">
                 <ListItemIcon>
                   <PictureAsPdfIcon />
                 </ListItemIcon>
                 <ListItemText primary="Pdfviewer" />
               </ListItem>
-              <ListItem button component={Link} to="/accesscontrol/Youtube">
+              <ListItem button component={Link} to="/resources/Youtube">
                 <ListItemIcon>
                   <YouTubeIcon />
                 </ListItemIcon>
                 <ListItemText primary="Youtube" />
               </ListItem>
-              <ListItem button component={Link} to="/accesscontrol/Assign">
+              <ListItem button component={Link} to="/resources/Assign">
                 <ListItemIcon>
                   <PersonAddAltIcon />
                 </ListItemIcon>
@@ -206,7 +206,7 @@ const Adminnavbar = () => {
           {userRole === "User" && (
             <>
               {/* {userOptions.includes('Youtube') && ( */}
-              <ListItem button component={Link} to="/accesscontrol/Youtube">
+              <ListItem button component={Link} to="/resources/Youtube">
                 <ListItemIcon>
                   <YouTubeIcon />
                 </ListItemIcon>
@@ -214,7 +214,7 @@ const Adminnavbar = () => {
               </ListItem>
 
               {/* {userOptions.includes('Pdfviewer') && ( */}
-              <ListItem button component={Link} to="/accesscontrol/Pdfviewer">
+              <ListItem button component={Link} to="/resources/Pdfviewer">
                 <ListItemIcon>
                   <PictureAsPdfIcon />
                 </ListItemIcon>
@@ -224,19 +224,19 @@ const Adminnavbar = () => {
           )}
           {userRole === "Maintainer" && (
             <>
-              <ListItem button component={Link} to="/accesscontrol/Pdfviewer">
+              <ListItem button component={Link} to="/resources/Pdfviewer">
                 <ListItemIcon>
                   <PictureAsPdfIcon />
                 </ListItemIcon>
                 <ListItemText primary="Pdfviewer" />
               </ListItem>
-              <ListItem button component={Link} to="/accesscontrol/Youtube">
+              <ListItem button component={Link} to="/resources/Youtube">
                 <ListItemIcon>
                   <YouTubeIcon />
                 </ListItemIcon>
                 <ListItemText primary="Youtube" />
               </ListItem>
-              <ListItem button component={Link} to="/accesscontrol/Formdata">
+              <ListItem button component={Link} to="/resources/Formdata">
                 <ListItemIcon>
                   <Analytics />
                 </ListItemIcon>
