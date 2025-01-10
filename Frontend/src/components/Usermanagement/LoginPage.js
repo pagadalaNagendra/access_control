@@ -4,10 +4,10 @@ import { useNavigate } from "react-router-dom";
 import logo from "./logos.png";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import ReplayIcon from "@mui/icons-material/Replay";
-
+import config from "../config";
 const styles = {
   appBar: {
-    backgroundColor: "#002e41",
+    backgroundColor: "#123462", // Changed color to #123462
   },
   toolbar: {
     display: "flex",
@@ -21,7 +21,10 @@ const styles = {
   title: {
     flexGrow: 1,
     textAlign: "center",
+    fontSize: "2.5rem",
     color: "#fff",
+    marginLeft: "-150px", 
+
   },
   button: {
     color: "#fff",
@@ -146,7 +149,7 @@ const LoginPage = () => {
 
     setPasswordError('');
 
-    const response = await fetch("http://localhost:8000/auth/login", {
+    const response = await fetch(`${config.backendAPI}/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -162,11 +165,11 @@ const LoginPage = () => {
 
       // Navigate based on role and options
       if (json.role === "Admin") {
-        navigate("/accesscontrol/Formdata");
+        navigate("/resources/Formdata");
       } else if (json.role === "User") {
-        navigate("/accesscontrol/Userdashboard");
+        navigate("/resources/Userdashboard");
       } else if (json.role === "Maintainer") {
-        navigate("/accesscontrol/Formdata");
+        navigate("/resources/Formdata");
       }
     } else {
       alert("Please provide valid credentials!!");
@@ -175,14 +178,25 @@ const LoginPage = () => {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
-      <AppBar position="static" style={styles.appBar}>
+            <AppBar position="fixed" style={styles.appBar}>
         <Toolbar style={styles.toolbar}>
-          <Box display="flex" alignItems="center">
-            <img src={logo} alt="Logo" style={styles.logo} />
-          </Box>
-          <Typography variant="h6" component="div" align="center" style={styles.title}>
-            Dashboard
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+              <img
+                src="https://res.cloudinary.com/dxoq1rrh4/image/upload/v1721754287/left_xfp4qb.png"
+                alt="Logo 1"
+                style={{ height: 60, marginRight: 10 }}
+              />
+              <img
+                src="https://res.cloudinary.com/dxoq1rrh4/image/upload/v1730886247/SMART_CITY_LOGO.8f8e3abe7957eafb9ff6_hcnlrr.png"
+                alt="Logo 2"
+                style={{ height: 60 }}
+              />
+            </Box>
+         
+          <Typography variant="h5" component="div" style={styles.title}>
+            Resources
           </Typography>
+
         </Toolbar>
       </AppBar>
       <Container maxWidth="sm" style={styles.container}>

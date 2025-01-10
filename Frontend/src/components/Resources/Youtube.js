@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Youtube.css"; // Grid styles
-import Adminnavbar from "./Adminnavbar"
+import Adminnavbar from "../Adminnavbar"
+import config from "../config";
 function VideoGallery() {
   const [videos, setVideos] = useState([]);
 
@@ -8,7 +9,7 @@ function VideoGallery() {
   useEffect(() => {
     const fetchVideos = async () => {
       try {
-        const response = await fetch("http://localhost:8000/auth/youtube"); // Backend route
+        const response = await fetch(`${config.backendAPI}/auth/youtube`); // Backend route
         const data = await response.json();
 
         if (data.success && data.videos) {

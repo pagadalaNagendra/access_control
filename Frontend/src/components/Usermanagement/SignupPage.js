@@ -5,7 +5,7 @@ import Admin from "./Admin";
 import Adminnavbar from "../Adminnavbar";
 import { Box, Typography, InputLabel, TextField, MenuItem, Select, Button, Container, Grid, AppBar, Toolbar } from "@mui/material";
 import ExistingUsersTable from "./ExistingUsersTable";
-
+import config from "../config";
 const SignupPage = () => {
   const [username, setUsername] = useState("");
   const [role, setRole] = useState("");
@@ -18,7 +18,7 @@ const SignupPage = () => {
   const existingUsersTableRef = useRef(null);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/auth/", { method: "GET" })
+    fetch(`${config.backendAPI}/auth/`, { method: "GET" })
       .then((response) => response.json())
       .then((data) => {
         console.log("Fetched initial data:", data); // Debug log
@@ -55,7 +55,7 @@ const SignupPage = () => {
 
     setPasswordError("");
 
-    const response = await fetch("http://localhost:8000/auth/signup", {
+    const response = await fetch(`${config.backendAPI}/auth/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

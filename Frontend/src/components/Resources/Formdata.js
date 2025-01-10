@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./Formdata.css"; // Add styling here
 import Adminnavbar from "../Adminnavbar"
+import config from "../config";
 function UploadSwitcher() {
   const [currentForm, setCurrentForm] = useState("youtube");
   const [youtubeTitle, setYoutubeTitle] = useState("");
@@ -15,7 +16,7 @@ function UploadSwitcher() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/auth/logos-data");
+        const response = await axios.get(`${config.backendAPI}/auth/logos-data`);
         if (response.data.success) {
           setTableData(response.data.requests); // Use the requests array from the response
         } else {
@@ -38,7 +39,7 @@ function UploadSwitcher() {
     }
 
     try {
-      await axios.post("http://localhost:8000/auth/youtube", {
+      await axios.post(`${config.backendAPI}/auth/youtube`, {
         title: youtubeTitle,
         url: youtubeUrl,
       });
@@ -64,7 +65,7 @@ function UploadSwitcher() {
     formData.append("pdf", pdfFile);
 
     try {
-      await axios.post("http://localhost:8000/auth/upload-pdf", formData, {
+      await axios.post(`${config.backendAPI}/auth/upload-pdf`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 

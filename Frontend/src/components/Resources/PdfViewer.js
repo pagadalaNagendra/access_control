@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./PdfViewer.css"; // Ensure the CSS file is correctly linked
 import Adminnavbar from "../Adminnavbar";
+import config from "../config";
 
 function PdfViewer() {
   const [pdfFiles, setPdfFiles] = useState([]);
@@ -8,7 +9,7 @@ function PdfViewer() {
   useEffect(() => {
     const fetchPdfs = async () => {
       try {
-        const response = await fetch("http://localhost:8000/auth/pdf-files"); // Replace with your backend URL
+        const response = await fetch(`${config.backendAPI}/auth/pdf-files`); // Replace with your backend URL
         const data = await response.json();
 
         if (data.success && data.files) {
@@ -24,6 +25,18 @@ function PdfViewer() {
     fetchPdfs();
   }, []);
 
+  const openFullScreen = (iframe) => {
+    if (iframe.requestFullscreen) {
+      iframe.requestFullscreen();
+    } else if (iframe.mozRequestFullScreen) { // Firefox
+      iframe.mozRequestFullScreen();
+    } else if (iframe.webkitRequestFullscreen) { // Chrome, Safari and Opera
+      iframe.webkitRequestFullscreen();
+    } else if (iframe.msRequestFullscreen) { // IE/Edge
+      iframe.msRequestFullscreen();
+    }
+  };
+
   return (
     <div>
       {/* Navbar */}
@@ -37,7 +50,11 @@ function PdfViewer() {
             {pdfFiles.map((file) => (
               <div key={file.id} className="pdf-item">
                 <h2>{file.title}</h2>
+                <button onClick={() => openFullScreen(document.getElementById(`iframe-${file.id}`))}>
+                  Full Screen
+                </button>
                 <iframe
+                  id={`iframe-${file.id}`}
                   src={`data:application/pdf;base64,${file.data}`}
                   width="300"
                   height="400"

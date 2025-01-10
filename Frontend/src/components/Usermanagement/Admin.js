@@ -10,7 +10,7 @@ import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import ReplayIcon from '@mui/icons-material/Replay';
 import logo from './logos.png';
 import axios from 'axios';
-
+import config from "../config";
 const styles = {
   appBar: {
     backgroundColor: '#002e41',
@@ -128,7 +128,7 @@ const Admin = () => {
   useEffect(() => {
     const fetchLogoData = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/auth/logos-data');
+        const response = await axios.get(`${config.backendAPI}/auth/logos-data`);
         if (response.data.success) {
           setLogoData(response.data.requests);
         } else {
@@ -179,7 +179,7 @@ const Admin = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const response = await fetch('http://localhost:8000/auth/youtube', {
+    const response = await fetch(`${config.backendAPI}/auth/youtube`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -242,20 +242,20 @@ const Admin = () => {
         </Box>
         <List>
   
-          <ListItem button component={Link} to="/accesscontrol/Pdfviewer">
+          <ListItem button component={Link} to="/resources/Pdfviewer">
             <ListItemIcon>
               {/* <Description /> */}
             </ListItemIcon>
             <ListItemText primary="Pdfviewer" />
           </ListItem>
-          <ListItem button component={Link} to="/accesscontrol/Youtube">
+          <ListItem button component={Link} to="/resources/Youtube">
             <ListItemIcon>
               <PersonAddAltIcon />
             </ListItemIcon>
             <ListItemText primary="Youtube" />
           </ListItem>
 
-          <ListItem button component={Link} to="/accesscontrol/Assign">
+          <ListItem button component={Link} to="/resources/Assign">
             <ListItemIcon>
               <PersonAddAltIcon />
             </ListItemIcon>

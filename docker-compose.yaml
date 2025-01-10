@@ -1,0 +1,53 @@
+version: '3'
+
+services:
+  # React Frontend Service
+  frontend:
+    build:
+      context: ./Frontend  # Path to your React app directory
+    container_name: react-app
+    ports:
+      - "8600:3000"  # Expose React app on port 3000
+    environment:
+      - REACT_APP_API_URL=http://backend:5000  # API URL for the backend
+      - FRONTEND_PORT=8600
+    volumes:
+      - ./Frontend:/app  # Sync the local directory to the container for live reloading
+    depends_on:
+      - Server # Ensure backend starts before frontend
+
+  # Express Backend Service
+  backend:
+    build:
+      context: ./Server  # Path to your Express app directory
+    container_name: express-backend
+    ports:
+      - "5000:5000"  # Expose backend on port 5000
+    environment:
+      - DB_HOST=db  # Hostname of the database container
+      - DB_PORT=5432  # PostgreSQL default port
+      - DB_USER=postgres  # PostgreSQL username
+      - DB_PASSWORD=postgres  # PostgreSQL password
+      - DB_NAME=SCRC-ACCESS  # Database name
+      - BACKEND_PORT=5000
+    volumes:
+      - ./backend:/Server  # Sync the local directory to the container
+    depends_on:
+      - db  # Ensure PostgreSQL starts before the backend
+
+  # PostgreSQL Database Service
+  db:
+    image: postgres:13  # Use the official PostgreSQL image
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: postgres  # PostgreSQL username
+      POSTGRES_PASSWORD: postgres  # PostgreSQL password
+      POSTGRES_DB: SCRC-ACCESS  # Database name
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # Persist database data
+    ports:
+      - "5432:5432"  # Expose PostgreSQL on port 5432
+
+# Named volumes to persist data
+volumes:
+  postgres_data:

@@ -3,7 +3,7 @@ import { Box, TextField, Button, Typography, Container, FormControl, InputLabel,
 import { useNavigate } from 'react-router-dom';
 import Adminnavbar from "../Adminnavbar";
 import './Userrequesting.css';
-
+import config from "../config";
 const Userrequesting = () => {
   const [email, setEmail] = useState('');
   const [selectedOption, setSelectedOption] = useState('');
@@ -19,7 +19,7 @@ const Userrequesting = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const response = await fetch('http://localhost:8000/auth/send-email', {
+    const response = await fetch(`${config.backendAPI}/auth/send-email`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
